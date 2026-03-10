@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sticky Notes</title>
+</head>
+
+<body style="font-family:Arial; padding:40px;">
+
+<h1>Sticky Notes</h1>
+
+<input id="noteInput"
+placeholder="Write a note..."
+style="padding:10px; width:250px;">
+
+<button onclick="addNote()"
+style="padding:10px 15px;">
+Add Note
+</button>
+
+<ul id="notesList" style="margin-top:20px;"></ul>
+
+<script>
+
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+function saveNotes(){
+  localStorage.setItem("notes", JSON.stringify(notes));
+}
+
+function renderNotes(){
+
+  const list = document.getElementById("notesList");
+
+  list.innerHTML = "";
+
+  notes.forEach((note,index)=>{
+
+    const li = document.createElement("li");
+
+    li.style.marginBottom = "10px";
+
+    li.innerHTML = `
+      <span>${note}</span>
+      <button onclick="editNote(${index})">Edit</button>
+      <button onclick="deleteNote(${index})">Delete</button>
+    `;
+
+    list.appendChild(li);
+
+  });
+
+}
+
+function addNote(){
+
+  const input = document.getElementById("noteInput");
+
+  const text = input.value.trim();
+
+  if(text === "") return;
+
+  notes.push(text);
+
+  input.value = "";
+
+  saveNotes();
+  renderNotes();
+
+}
+
+function deleteNote(index){
+
+  notes.splice(index,1);
+
+  saveNotes();
+  renderNotes();
+
+}
+
+function editNote(index){
+
+  const newNote = prompt("Edit your note:", notes[index]);
+
+  if(newNote !== null){
+
+    notes[index] = newNote;
+
+    saveNotes();
+    renderNotes();
+
+  }
+
+}
+
+renderNotes();
+
+</script>
+
+</body>
+</html>
